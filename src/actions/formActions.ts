@@ -41,11 +41,11 @@ export async function submitFormInsecure(formData: FormData) {
 // 1. Định nghĩa Zod Schema (gõ trực tiếp)
 const formSchema = z.object({
   email: z
-    .string({ required_error: 'Bạn ơi, email đâu rồi? 😭' })
+    .string()
     .min(1, 'Bạn ơi, email đâu rồi? 😭')
     .email('Email gì mà kỳ vậy? Phải có @ chứ! 🤔'),
   password: z
-    .string({ required_error: 'Mật khẩu không được bỏ trống! 🔐' })
+    .string()
     .min(8, 'Mật khẩu yếu quá, chó nhà tui còn đoán được! 🐕')
     .regex(/[A-Z]/, 'Phải có ít nhất 1 chữ HOA (A-Z) nha! ⬆️')
     .regex(/[0-9]/, 'Thêm ít nhất 1 con số (0-9) đi! 🔢'),
