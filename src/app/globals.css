@@ -625,6 +625,12 @@ body {
   color: var(--accent-green);
 }
 
+.connection-badge.polling {
+  background: rgba(255, 234, 167, 0.2);
+  border-color: rgba(255, 234, 167, 0.4);
+  color: var(--accent-yellow);
+}
+
 .pulse-dot {
   width: 8px;
   height: 8px;
@@ -635,6 +641,10 @@ body {
 
 .pulse-dot.red {
   background: var(--accent-red);
+}
+
+.pulse-dot.yellow {
+  background: var(--accent-yellow);
 }
 
 @keyframes pulse {

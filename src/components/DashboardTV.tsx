@@ -16,7 +16,7 @@ export default function DashboardTV() {
     Array<{ id: number; text: string; type: string }>
   >([]);
   const [confetti, setConfetti] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
+  const [connectionMode, setConnectionMode] = useState<'connecting' | 'pusher' | 'polling'>('connecting');
   const eventIdRef = useRef(0);
 
   // Add event to feed
@@ -28,11 +28,13 @@ export default function DashboardTV() {
   // Try Pusher first, fallback to polling
   useEffect(() => {
     const pusher = getPusherClient();
+    console.log('[Dashboard] NEXT_PUBLIC_PUSHER_KEY:', process.env.NEXT_PUBLIC_PUSHER_KEY ? 'SET' : 'NOT SET');
+    console.log('[Dashboard] Pusher client:', pusher ? 'OK' : 'NULL (falling back to polling)');
 
     if (pusher) {
       // === PUSHER MODE ===
       const channel = pusher.subscribe('form-battle');
-      setIsConnected(true);
+      setConnectionMode('pusher');
 
       channel.bind('click-miss', () => {
         setStats((s) => ({ ...s, clickMiss: s.clickMiss + 1 }));
@@ -62,8 +64,8 @@ export default function DashboardTV() {
         pusher.unsubscribe('form-battle');
       };
     } else {
-      // === POLLING MODE ===
-      setIsConnected(true);
+      // === POLLING MODE (Pusher keys not available at build time) ===
+      setConnectionMode('polling');
       const interval = setInterval(async () => {
         try {
           const res = await fetch('/api/stats');
@@ -145,9 +147,9 @@ export default function DashboardTV() {
           <span className="title-emoji">🛡️</span>
         </h1>
         <p className="dashboard-subtitle">Bảng Điều Khiển Trực Tiếp</p>
-        <div className={`connection-badge ${isConnected ? 'connected' : ''}`}>
-          <span className="pulse-dot" />
-          {isConnected ? 'LIVE' : 'Connecting...'}
+        <div className={`connection-badge ${connectionMode === 'pusher' ? 'connected' : connectionMode === 'polling' ? 'polling' : ''}`}>
+          <span className={`pulse-dot ${connectionMode === 'polling' ? 'yellow' : ''}`} />
+          {connectionMode === 'pusher' ? '⚡ PUSHER LIVE' : connectionMode === 'polling' ? '🔄 POLLING' : 'Connecting...'}
         </div>
       </header>
 
