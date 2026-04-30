@@ -5,33 +5,25 @@ import PusherClient from 'pusher-js';
 // SERVER-SIDE: Pusher instance để trigger events
 // ============================================
 
-// Dùng globalThis để tránh duplicate instance khi hot-reload
-declare global {
-  // eslint-disable-next-line no-var
-  var __pusherServer: PusherServer | undefined;
-}
-
 export function getPusherServer(): PusherServer | null {
   if (
     !process.env.PUSHER_APP_ID ||
     !process.env.PUSHER_KEY ||
     !process.env.PUSHER_SECRET
   ) {
-    // Không có Pusher keys → dùng polling fallback
+    console.log('[Pusher] Missing keys, falling back to polling');
     return null;
   }
 
-  if (!globalThis.__pusherServer) {
-    globalThis.__pusherServer = new PusherServer({
-      appId: process.env.PUSHER_APP_ID!,
-      key: process.env.PUSHER_KEY!,
-      secret: process.env.PUSHER_SECRET!,
-      cluster: process.env.PUSHER_CLUSTER || 'ap1',
-      useTLS: true,
-    });
-  }
-
-  return globalThis.__pusherServer;
+  // Trên Vercel serverless: tạo instance mới mỗi lần
+  // (không cache vì mỗi invocation là isolated)
+  return new PusherServer({
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_KEY,
+    secret: process.env.PUSHER_SECRET,
+    cluster: process.env.PUSHER_CLUSTER || 'ap1',
+    useTLS: true,
+  });
 }
 
 // Hàm trigger event — tự động fallback nếu không có Pusher
@@ -43,11 +35,11 @@ export async function triggerPusher(
   if (server) {
     try {
       await server.trigger('form-battle', eventName, data);
+      console.log(`[Pusher] Triggered: ${eventName}`);
     } catch (err) {
       console.error('[Pusher] Trigger error:', err);
     }
   }
-  // Nếu không có Pusher → client sẽ dùng polling qua API route
 }
 
 // ============================================
