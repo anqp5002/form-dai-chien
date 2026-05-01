@@ -4,6 +4,13 @@ import { z } from 'zod';
 import { triggerPusher } from '@/lib/pusher';
 import { incrementStat, addSubmission } from '@/lib/store';
 
+// Kiểu trả về chung cho submitForm
+export type FormResult = {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
 // Zod Schema — định nghĩa dữ liệu hợp lệ
 const formSchema = z.object({
   email: z
@@ -21,7 +28,7 @@ const formSchema = z.object({
 export async function submitForm(
   prevState: unknown,
   formData: FormData
-) {
+): Promise<FormResult> {
   const rawData = Object.fromEntries(formData);
 
   const validated = formSchema.safeParse(rawData);

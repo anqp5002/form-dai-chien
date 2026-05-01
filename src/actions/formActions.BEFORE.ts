@@ -3,11 +3,18 @@
 import { triggerPusher } from '@/lib/pusher';
 import { incrementStat, addSubmission } from '@/lib/store';
 
+// Kiểu trả về chung cho submitForm
+export type FormResult = {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
 // Hàm xử lý form — chưa có validation
 export async function submitForm(
   prevState: unknown,
   formData: FormData
-) {
+): Promise<FormResult> {
   const rawData = Object.fromEntries(formData);
 
   const email = (rawData.email as string) || '(trống)';
