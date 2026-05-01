@@ -1,6 +1,4 @@
-// In-memory store cho demo — dữ liệu sẽ mất khi restart server
-// Trong production thật sẽ dùng Database (Prisma, Drizzle...)
-// Dùng globalThis để đảm bảo CÙNG instance giữa Server Actions và API Routes
+// In-memory store cho demo (production thật sẽ dùng Database)
 
 export type StatsData = {
   clickMiss: number;
@@ -14,13 +12,12 @@ export type StatsData = {
   }>;
 };
 
-// Extend globalThis type
 declare global {
   // eslint-disable-next-line no-var
   var __formBattleStore: StatsData | undefined;
 }
 
-// Dùng globalThis để persist state giữa hot reloads và module boundaries
+// Lấy store instance (tạo mới nếu chưa có)
 function getStore(): StatsData {
   if (!globalThis.__formBattleStore) {
     globalThis.__formBattleStore = {
@@ -34,6 +31,7 @@ function getStore(): StatsData {
   return globalThis.__formBattleStore;
 }
 
+// Đọc stats hiện tại
 export function getStats(): StatsData {
   const store = getStore();
   return {
@@ -42,11 +40,13 @@ export function getStats(): StatsData {
   };
 }
 
+// Tăng số liệu thống kê
 export function incrementStat(key: keyof Omit<StatsData, 'submissions'>) {
   const store = getStore();
   (store[key] as number)++;
 }
 
+// Thêm submission vào danh sách
 export function addSubmission(email: string, isSecure: boolean) {
   const store = getStore();
   store.submissions.push({
@@ -56,6 +56,7 @@ export function addSubmission(email: string, isSecure: boolean) {
   });
 }
 
+// Reset toàn bộ stats
 export function resetStats() {
   globalThis.__formBattleStore = {
     clickMiss: 0,

@@ -4,16 +4,7 @@ import { z } from 'zod';
 import { triggerPusher } from '@/lib/pusher';
 import { incrementStat, addSubmission } from '@/lib/store';
 
-// ╔════════════════════════════════════════════════════════════╗
-// ║  📌 FILE NÀY LÀ TRỌNG TÂM LIVE CODE TRÊN LỚP            ║
-// ║                                                            ║
-// ║  TRƯỚC DEMO: Xóa phần Zod Schema + validation bên trong   ║
-// ║  → Copy nội dung từ formActions.BEFORE.ts                  ║
-// ║                                                            ║
-// ║  SAU DEMO: File sẽ giống formActions.AFTER.ts              ║
-// ╚════════════════════════════════════════════════════════════╝
-
-// Zod Schema
+// Zod Schema — định nghĩa dữ liệu hợp lệ
 const formSchema = z.object({
   email: z
     .string()
@@ -26,14 +17,13 @@ const formSchema = z.object({
     .regex(/[0-9]/, 'Thêm ít nhất 1 con số (0-9) đi! 🔢'),
 });
 
-// Hàm xử lý form (tên THỐNG NHẤT — FunnyForm import hàm này)
+// Hàm xử lý form — có validation bằng Zod
 export async function submitForm(
   prevState: unknown,
   formData: FormData
 ) {
   const rawData = Object.fromEntries(formData);
 
-  // Validate bằng Zod
   const validated = formSchema.safeParse(rawData);
 
   if (!validated.success) {
@@ -48,7 +38,6 @@ export async function submitForm(
     };
   }
 
-  // Dữ liệu sạch → lưu vào "DB"
   addSubmission(validated.data.email, true);
   incrementStat('successCount');
 
@@ -63,7 +52,7 @@ export async function submitForm(
   };
 }
 
-// Hàm phụ: Ghi nhận click trượt
+// Ghi nhận click trượt
 export async function reportClickMiss() {
   incrementStat('clickMiss');
   await triggerPusher('click-miss', { count: 1 });

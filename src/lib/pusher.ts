@@ -1,10 +1,7 @@
 import PusherServer from 'pusher';
 import PusherClient from 'pusher-js';
 
-// ============================================
-// SERVER-SIDE: Pusher instance để trigger events
-// ============================================
-
+// Tạo Pusher server instance để gửi events
 export function getPusherServer(): PusherServer | null {
   if (
     !process.env.PUSHER_APP_ID ||
@@ -15,8 +12,6 @@ export function getPusherServer(): PusherServer | null {
     return null;
   }
 
-  // Trên Vercel serverless: tạo instance mới mỗi lần
-  // (không cache vì mỗi invocation là isolated)
   return new PusherServer({
     appId: process.env.PUSHER_APP_ID,
     key: process.env.PUSHER_KEY,
@@ -26,7 +21,7 @@ export function getPusherServer(): PusherServer | null {
   });
 }
 
-// Hàm trigger event — tự động fallback nếu không có Pusher
+// Trigger event đến tất cả client đang subscribe
 export async function triggerPusher(
   eventName: string,
   data: Record<string, unknown> = {}
@@ -42,10 +37,7 @@ export async function triggerPusher(
   }
 }
 
-// ============================================
-// CLIENT-SIDE: Pusher instance để subscribe
-// ============================================
-
+// Tạo Pusher client instance để nhận events (browser)
 let pusherClient: PusherClient | null = null;
 
 export function getPusherClient(): PusherClient | null {
