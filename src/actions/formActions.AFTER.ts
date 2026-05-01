@@ -1,19 +1,16 @@
 'use server';
 
-import { z } from 'zod';
+import { z } from 'zod';  // ← MC thêm dòng này
 import { triggerPusher } from '@/lib/pusher';
 import { incrementStat, addSubmission } from '@/lib/store';
 
 // ╔════════════════════════════════════════════════════════════╗
-// ║  📌 FILE NÀY LÀ TRỌNG TÂM LIVE CODE TRÊN LỚP            ║
-// ║                                                            ║
-// ║  TRƯỚC DEMO: Xóa phần Zod Schema + validation bên trong   ║
-// ║  → Copy nội dung từ formActions.BEFORE.ts                  ║
-// ║                                                            ║
-// ║  SAU DEMO: File sẽ giống formActions.AFTER.ts              ║
+// ║  📌 FILE SAU KHI LIVE CODE XONG                           ║
 // ╚════════════════════════════════════════════════════════════╝
 
-// Zod Schema
+// ==============================================================
+// 🔥 PHẦN MC GÕ: Zod Schema
+// ==============================================================
 const formSchema = z.object({
   email: z
     .string()
@@ -26,14 +23,16 @@ const formSchema = z.object({
     .regex(/[0-9]/, 'Thêm ít nhất 1 con số (0-9) đi! 🔢'),
 });
 
-// Hàm xử lý form (tên THỐNG NHẤT — FunnyForm import hàm này)
+// ==============================================================
+// HÀM XỬ LÝ FORM — SAU KHI THÊM VALIDATION
+// ==============================================================
 export async function submitForm(
   prevState: unknown,
   formData: FormData
 ) {
   const rawData = Object.fromEntries(formData);
 
-  // Validate bằng Zod
+  // 🔥 MC GÕ: Validate bằng Zod
   const validated = formSchema.safeParse(rawData);
 
   if (!validated.success) {
@@ -63,7 +62,9 @@ export async function submitForm(
   };
 }
 
-// Hàm phụ: Ghi nhận click trượt
+// ==============================================================
+// Hàm phụ: Ghi nhận click trượt (chuẩn bị sẵn)
+// ==============================================================
 export async function reportClickMiss() {
   incrementStat('clickMiss');
   await triggerPusher('click-miss', { count: 1 });

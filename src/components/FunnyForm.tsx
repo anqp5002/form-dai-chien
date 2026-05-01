@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect, useActionState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { submitFormSecure, reportClickMiss } from '@/actions/formActions';
+import { submitForm, reportClickMiss } from '@/actions/formActions';
 
 // Client-side Zod schema (dùng lại pattern giống server)
 const clientSchema = z.object({
@@ -22,7 +22,7 @@ const clientSchema = z.object({
 type FormValues = z.infer<typeof clientSchema>;
 
 export default function FunnyForm() {
-  const [serverState, formAction, isPending] = useActionState(submitFormSecure, null);
+  const [serverState, formAction, isPending] = useActionState(submitForm, null);
   const [buttonPos, setButtonPos] = useState({ x: 0, y: 0 });
   const [missCount, setMissCount] = useState(0);
   const [catchCount, setCatchCount] = useState(0); // Đếm số lần bắt được nút
