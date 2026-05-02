@@ -147,6 +147,16 @@ export default function DashboardTV() {
           <span className="title-emoji">🛡️</span>
         </h1>
         <p className="dashboard-subtitle">Bảng Điều Khiển Trực Tiếp</p>
+        <div className="dashboard-qr">
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://form-dai-chien-osy3.vercel.app/"
+            alt="QR Code"
+            width={160}
+            height={160}
+            style={{ borderRadius: 8, background: '#fff', padding: 6 }}
+          />
+          <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 6 }}>📱 Quét để tham gia!</p>
+        </div>
         <div className={`connection-badge ${connectionMode === 'pusher' ? 'connected' : connectionMode === 'polling' ? 'polling' : ''}`}>
           <span className={`pulse-dot ${connectionMode === 'polling' ? 'yellow' : ''}`} />
           {connectionMode === 'pusher' ? '⚡ PUSHER LIVE' : connectionMode === 'polling' ? '🔄 POLLING' : 'Connecting...'}
