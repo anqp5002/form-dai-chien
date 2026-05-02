@@ -25,7 +25,7 @@ export default function WinnerBoard() {
       channel.bind('success-event', (data: { email: string }) => {
         const id = ++idRef.current;
         const time = new Date().toLocaleTimeString('vi-VN');
-        setWinners((prev) => [{ id, email: data.email, time }, ...prev]);
+        setWinners((prev) => [...prev, { id, email: data.email, time }]);
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 3000);
       });
@@ -86,7 +86,7 @@ export default function WinnerBoard() {
           winners.map((w, index) => (
             <div
               key={w.id}
-              className={`winner-card ${index === 0 ? 'winner-card-latest' : ''}`}
+              className={`winner-card ${index === winners.length - 1 ? 'winner-card-latest' : ''}`}
             >
               <div className="winner-rank">
                 {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
