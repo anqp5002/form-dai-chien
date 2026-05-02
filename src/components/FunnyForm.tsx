@@ -27,7 +27,7 @@ export default function FunnyForm() {
   const [missCount, setMissCount] = useState(0);
   const [catchCount, setCatchCount] = useState(0); // Đếm số lần bắt được nút
   const [gravityMode, setGravityMode] = useState(false);
-  const [warningLogs, setWarningLogs] = useState<Array<{id: number; text: string; type: 'warn' | 'error' | 'info'}>>([]);
+  const [warningLogs, setWarningLogs] = useState<Array<{ id: number; text: string; type: 'warn' | 'error' | 'info' }>>([]);
   const [caughtFirstTime, setCaughtFirstTime] = useState(false); // Đã bắt lần 1 chưa
   const logIdRef = useRef(0);
   const [weakClickCount, setWeakClickCount] = useState(0); // Đếm click khi mật khẩu yếu
@@ -76,43 +76,43 @@ export default function FunnyForm() {
   ];
 
   // Nút submit LUÔN chạy trốn (kể cả form valid)
-  const handleButtonDodge = useCallback(() => {
-    // Nếu đã bắt lần 1 rồi (caughtFirstTime = true) → cho nút đứng yên
-    if (caughtFirstTime) return;
+  // const handleButtonDodge = useCallback(() => {
+  //   // Nếu đã bắt lần 1 rồi (caughtFirstTime = true) → cho nút đứng yên
+  //   if (caughtFirstTime) return;
 
-    const container = formContainerRef.current;
-    if (!container) return;
+  //   const container = formContainerRef.current;
+  //   if (!container) return;
 
-    const rect = container.getBoundingClientRect();
-    const maxX = rect.width - 200;
-    const maxY = 120;
-    const newX = Math.random() * maxX - maxX / 2;
-    const newY = Math.random() * maxY - maxY / 2;
+  //   const rect = container.getBoundingClientRect();
+  //   const maxX = rect.width - 200;
+  //   const maxY = 120;
+  //   const newX = Math.random() * maxX - maxX / 2;
+  //   const newY = Math.random() * maxY - maxY / 2;
 
-    setButtonPos({ x: newX, y: newY });
-    setMissCount((prev) => prev + 1);
+  //   setButtonPos({ x: newX, y: newY });
+  //   setMissCount((prev) => prev + 1);
 
-    // Nếu mật khẩu yếu → đếm click, trigger rơi chữ khi nhiều lần
-    const strength = getPasswordStrength(password);
-    if (strength <= 1 && password.length > 0) {
-      setWeakClickCount((prev) => {
-        const newCount = prev + 1;
-        // Sau 5 lần click với mật khẩu yếu → rơi chữ!
-        if (newCount >= 5 && !gravityMode) {
-          setGravityMode(true);
-          setTimeout(() => setGravityMode(false), 4000);
-        }
-        return newCount;
-      });
-    }
+  //   // Nếu mật khẩu yếu → đếm click, trigger rơi chữ khi nhiều lần
+  //   const strength = getPasswordStrength(password);
+  //   if (strength <= 1 && password.length > 0) {
+  //     setWeakClickCount((prev) => {
+  //       const newCount = prev + 1;
+  //       // Sau 5 lần click với mật khẩu yếu → rơi chữ!
+  //       if (newCount >= 5 && !gravityMode) {
+  //         setGravityMode(true);
+  //         setTimeout(() => setGravityMode(false), 4000);
+  //       }
+  //       return newCount;
+  //     });
+  //   }
 
-    // Show log
-    const taunt = tauntMessages[Math.floor(Math.random() * tauntMessages.length)];
-    addLog(taunt, 'warn');
+  //   // Show log
+  //   const taunt = tauntMessages[Math.floor(Math.random() * tauntMessages.length)];
+  //   addLog(taunt, 'warn');
 
-    // Gửi event lên server
-    reportClickMiss();
-  }, [caughtFirstTime, password, gravityMode, getPasswordStrength]);
+  //   // Gửi event lên server
+  //   reportClickMiss();
+  // }, [caughtFirstTime, password, gravityMode, getPasswordStrength]);
 
   // Xử lý khi click trúng nút submit
   const handleSubmitClick = useCallback(
@@ -284,8 +284,8 @@ export default function FunnyForm() {
               transform: `translate(${buttonPos.x}px, ${buttonPos.y}px)`,
               transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
             }}
-            onMouseEnter={handleButtonDodge}
-            onTouchStart={handleButtonDodge}
+            // onMouseEnter={handleButtonDodge}
+            // onTouchStart={handleButtonDodge}
             onClick={handleSubmitClick}
           >
             {isPending ? (
