@@ -10,7 +10,7 @@ export default function HomePage() {
       </div>
       <FunnyForm />
       <footer className="page-footer">
-        <p>Nhóm 6 — Xử Lý Form &amp; Validation Hiện Đại với Next.js</p>
+        <p>Nhóm 8 — Xử Lý Form &amp; Validation Hiện Đại với Next.js</p>
       </footer>
     </main>
   );
